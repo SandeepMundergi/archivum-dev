@@ -1,0 +1,31 @@
+
+@import "../../sass/theme.scss";
+.main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 70vh;
+    gap: 3rem;
+}
+
+.button {
+    button {
+        width: 25rem;
+        height: 3.5rem;
+        font-size: 28px;
+        border-radius: 10px;
+        background-color: $btn-color;
+        color: $text-color;
+        font-family: $font-family;
+        letter-spacing: 0em;
+        text-transform: uppercase;
+        cursor: pointer;
+    }
+
+    :hover{
+        color: $btn-color;
+        border: 2px solid $btn-color;
+        background-color: $bg-color;
+    }
+}
