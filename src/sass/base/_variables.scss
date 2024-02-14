@@ -1,3 +1,8 @@
+$text-color: #fff;
 $bg-color: #EAEAEB;
 $btn-color: #2E2D2D;
-$text-color: #fff;
+
+:root {
+    --btn-color: #{$btn-color};
+    --bg-color: #{$bg-color};
+}
