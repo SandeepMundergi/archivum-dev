@@ -1,37 +1,25 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState, useRef } from "react";
 import "./Main.scss"
 import { HiOutlineViewGrid } from "react-icons/hi";
 import { RiListIndefinite } from "react-icons/ri";
-import { IoMdClose } from "react-icons/io";
 import "../../sass/theme.scss"
+
+interface FileData {
+    date: any;
+    name: string;
+    url: string;
+}
 
 const Main = () => {
     const [gridView, setGridView] = useState(false);
     const [listView, setListView] = useState(true);
-    const [modal, setModal] = useState(false);
-    const [file, setFile] = useState<File | null>(null);
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-
-    const toggleModal = () => { setModal(!modal); };
-
-    if (modal) {
-        document.body.classList.add('active-modal')
-    }
-    else {
-        document.body.classList.remove('active-modal')
-    }
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [data, setData] = useState<FileData[]>([])
 
     const handleClickView = () => {
-        if (gridView === false) {
-            setGridView(true);
-            setListView(false);
-        }
-        else {
-            setGridView(false);
-            setListView(true);
-        }
+        setGridView(prev => !prev);
+        setListView(prev => !prev);
     }
-
 
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
         const selectedFile = event.target.files?.[0];
@@ -40,12 +28,17 @@ const Main = () => {
                 selectedFile.type.startsWith('image/png') ||
                 selectedFile.type.startsWith('image/jpeg') ||
                 selectedFile.type.startsWith('image/webp') ||
-                selectedFile.type.startsWith('image/svg')
+                selectedFile.name.toLowerCase().endsWith('.svg')
             ) {
-                setFile(selectedFile);
                 const reader = new FileReader();
                 reader.onloadend = () => {
-                    setPreviewUrl(reader.result as string);
+                    const previewUrl = reader.result as string;
+                    const obj = {
+                        name: selectedFile.name,
+                        url: previewUrl,
+                        date: new Date()
+                    };
+                    setData(prevData => [...prevData, obj]);
                 };
                 reader.readAsDataURL(selectedFile);
             } else {
@@ -53,6 +46,12 @@ const Main = () => {
                 event.target.value = '';
             }
         }
+        alert("Success");
+        console.log(data)
+    }
+
+    const handleFileClick = () => {
+        fileInputRef.current?.click();
     }
 
     return (
@@ -60,34 +59,46 @@ const Main = () => {
             <div className="main-header">
                 <div className="heading">My Files</div>
                 <div className="button">
-                    <button onClick={toggleModal}> Add Files</button>
+                    <button onClick={handleFileClick}> Add Files</button>
+                    <input type="file" onChange={handleFileChange} ref={fileInputRef} accept=".png, .jpeg, .jpg, .webp, .svg" />
                 </div>
             </div>
             <div className="main-body">
-                <div className="view-continer">
-                    <HiOutlineViewGrid className={gridView ? "view1" : "view1-invert"} onClick={handleClickView} />
-                    <RiListIndefinite className={listView ? "view2" : "view2-invert"} onClick={handleClickView} />
-                </div>
-            </div>
-            {
-                modal &&
-                (
-                    <div className="modal" > <div onClick={toggleModal} className="overlay" ></div>
-                        <div className="modal-content" >
-                            <input type="file" onChange={handleFileChange} accept=".png, .jpeg, .jpg, .webp, .svg" />
-                            {previewUrl && (
-                                <div>
-                                    {file?.type.startsWith('image') ? (
-                                        <img src={previewUrl} alt="File preview" style={{ maxWidth: '100px' }} />
-                                    ) : (
-                                        <div>Unsupported file type</div>
-                                    )}
+                <header>
+                    <div className="view-continer">
+                        <HiOutlineViewGrid className={gridView ? "view1" : "view1-invert"} onClick={handleClickView} />
+                        <RiListIndefinite className={listView ? "view2" : "view2-invert"} onClick={handleClickView} />
+                    </div>
+                    <div className="filter-container">
+                        <select className='form-select'>
+                            <option value={"Name"}>Date</option>
+                            <option value={"Date Asc"}>Alphabet</option>
+                        </select>
+                    </div>
+                </header>
+                <div className="main-content">
+                    {!gridView ? <div className="gridView">
+                        <div className="Grid">
+                            {data.map(co =>
+                                <div className="card">
+                                    <div className="img-container">
+                                        <img src={co.url} alt="" width={"100%"} />
+                                    </div>
+                                    <div className="text-container">
+                                        <div className="heading">
+                                            {co.name}
+                                        </div>
+                                        <div className="date">
+                                            {co.date.toLocaleString()}
+                                        </div>
+                                    </div>
+
                                 </div>
                             )}
-                            <IoMdClose className="close-modal" onClick={toggleModal} />
-                        </div> </div>
-                )
-            }
+                        </div>
+                    </div> : <div className="listView">list</div>}
+                </div>
+            </div>
         </>
     )
 }
