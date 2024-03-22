@@ -2,6 +2,7 @@ import { ChangeEvent, useState, useRef } from "react";
 import "./Main.scss"
 import { HiOutlineViewGrid } from "react-icons/hi";
 import { RiListIndefinite } from "react-icons/ri";
+import { FaDownload } from "react-icons/fa6";
 import "../../sass/theme.scss"
 
 interface FileData {
@@ -53,6 +54,31 @@ const Main = () => {
     const handleFileClick = () => {
         fileInputRef.current?.click();
     }
+    const handleDownload = (imageUrl: string | undefined, filename: string | undefined) => {
+        if (!imageUrl) {
+            console.error("Image URL is undefined");
+            return;
+        }
+
+        // Create a temporary anchor element
+        const downloadLink = document.createElement('a');
+        downloadLink.href = imageUrl;
+        downloadLink.download = "Archivum_" + filename; // Use the last part of the URL as the file name
+        downloadLink.click(); // Simulate a click to trigger the download
+    }
+    const handlesort = (event: { target: { value: any; }; }) => {
+        const sort: any = event.target.value
+        if (sort === "date") {
+            console.log("date")
+            const sortedData = [...data].sort((a, b) => b.date.getTime() - a.date.getTime());
+            setData(sortedData);
+            console.log(data);
+        }
+        else {
+            const sortedData = [...data].sort((a, b) => a.name.localeCompare(b.name));
+            setData(sortedData);
+        }
+    }
 
     return (
         <>
@@ -70,9 +96,9 @@ const Main = () => {
                         <RiListIndefinite className={listView ? "view2" : "view2-invert"} onClick={handleClickView} />
                     </div>
                     <div className="filter-container">
-                        <select className='form-select'>
-                            <option value={"Name"}>Date</option>
-                            <option value={"Date Asc"}>Alphabet</option>
+                        <select className='form-select' onChange={handlesort}>
+                            <option value={"date"}>Date</option>
+                            <option value={"name"}>Alphabet</option>
                         </select>
                     </div>
                 </header>
@@ -92,11 +118,29 @@ const Main = () => {
                                             {co.date.toLocaleString()}
                                         </div>
                                     </div>
-
                                 </div>
                             )}
                         </div>
-                    </div> : <div className="listView">list</div>}
+                    </div> : <div className="listView">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>SrNo</th>
+                                    <th>FileName</th>
+                                    <th>Datetime</th>
+                                    <th>Download</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {data.map((co, index) => <tr key={index + 1}>
+                                    <td data-label="SrNo">{index + 1}</td>
+                                    <td data-label="File Name">{co.name}</td>
+                                    <td data-label="Datetime">{co.date.toLocaleString()}</td>
+                                    <td data-label="Download" style={{ cursor: "pointer" }} onClick={() => handleDownload(co.url, co.name)}><FaDownload /></td>
+                                </tr>)}
+                            </tbody>
+                        </table>
+                    </div>}
                 </div>
             </div>
         </>
