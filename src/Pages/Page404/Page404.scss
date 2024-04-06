@@ -1,0 +1,58 @@
+@import "../../sass/theme.scss";
+
+.main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 70vh;
+    gap: 3rem;
+}
+
+.archivum2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    img {
+        width: 30% !important;
+    }
+
+    h1,
+    p {
+        color: $btn-color;
+    }
+
+    h1 {
+        font-size: 12rem;
+        letter-spacing: 2rem;
+    }
+
+    p {
+        letter-spacing: 0.5rem;
+        font-size: 2.5rem;
+    }
+}
+
+.button2 {
+    padding: 1.2%;
+    margin-top: 5%;
+    width: 10rem;
+    height: 2.5rem;
+    font-size: 18px;
+    border-radius: 10px;
+    background-color: $btn-color;
+    color: $text-color;
+    font-family: $font-family;
+    letter-spacing: 0em;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+
+    :hover {
+        color: $btn-color;
+        border: 2px solid $btn-color;
+        background-color: $bg-color;
+    }
+}

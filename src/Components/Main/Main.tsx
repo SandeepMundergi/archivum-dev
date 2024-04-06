@@ -41,13 +41,13 @@ const Main = () => {
                     };
                     setData(prevData => [...prevData, obj]);
                 };
+                alert("Success");
                 reader.readAsDataURL(selectedFile);
             } else {
                 alert('Unsupported file type. Please select a PNG, JPEG, WebP, or SVG file.');
                 event.target.value = '';
             }
         }
-        alert("Success");
         console.log(data)
     }
 
